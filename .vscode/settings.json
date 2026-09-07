@@ -1,0 +1,4 @@
+{
+  "prettier.experimentalTernaries": true,
+  "python-envs.defaultEnvManager": "ms-python.python:system"
+}

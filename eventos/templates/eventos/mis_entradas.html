@@ -1,0 +1,28 @@
+{% extends 'eventos/base.html' %}
+
+{% block titulo %}Mis Entradas{% endblock %}
+
+{% block contenido %}
+    <div class="detalle-container">
+        <h1>🎟️ Mis Entradas</h1>
+        {% if entradas %}
+            {% for entrada in entradas %}
+                <div style="border:1px solid #ddd; padding:15px; margin-bottom:15px; border-radius:10px;">
+                    <h3>{{ entrada.evento.nombre }}</h3>
+                    <p><strong>Código:</strong> {{ entrada.codigo_unico }}</p>
+                    <p><strong>Fecha compra:</strong> {{ entrada.fecha_compra|date:"d/m/Y" }}</p>
+                    <p><strong>Precio pagado:</strong> ${{ entrada.precio_pagado }}</p>
+                    {% if entrada.qr_code %}
+                        <img src="{{ entrada.qr_code.url }}" alt="QR" width="150">
+                    {% else %}
+                        <p>QR no disponible</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No has comprado ninguna entrada aún.</p>
+        {% endif %}
+        <br>
+        <a href="{% url 'eventos:lista' %}" class="btn btn-outline">← Volver al inicio</a>
+    </div>
+{% endblock %}

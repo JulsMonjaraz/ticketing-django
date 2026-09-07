@@ -1,0 +1,15 @@
+{% extends 'eventos/base.html' %}
+
+{% block titulo %}Registro{% endblock %}
+
+{% block contenido %}
+    <div class="detalle-container" style="max-width:500px; margin:0 auto;">
+        <h2>Crear cuenta</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn">Registrarse</button>
+        </form>
+        <p style="margin-top:15px;">¿Ya tienes cuenta? <a href="{% url 'usuarios:login' %}">Inicia sesión</a></p>
+    </div>
+{% endblock %}

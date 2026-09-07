@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titulo %}Ticketing{% endblock %}</title>
+    <!-- Google Fonts para tipografía suave -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- RESET Y ESTILOS GLOBALES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: #f9f6f0;  /* Fondo pastel crema */
+            color: #4a4a4a;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- CONTENEDOR PRINCIPAL --- */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+            flex: 1;
+        }
+
+        /* --- MENÚ DE NAVEGACIÓN --- */
+        nav {
+            background: #ffffff;
+            padding: 15px 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-brand {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: #b8a9c9;  /* Lila pastel */
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #6b5b7b;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 8px 14px;
+            border-radius: 30px;
+            transition: all 0.2s ease;
+            background: transparent;
+        }
+
+        .nav-links a:hover {
+            background: #f0ebf5;
+            color: #4a3a5a;
+        }
+
+        .nav-links a.active {
+            background: #e8def0;
+            color: #4a3a5a;
+        }
+
+        .nav-user {
+            font-weight: 400;
+            color: #b8a9c9;
+        }
+
+        /* --- TARJETAS DE EVENTOS --- */
+        .eventos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .evento-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 22px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid #f0ebf5;
+        }
+
+        .evento-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.07);
+        }
+
+        .evento-card h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .evento-card h2 a {
+            color: #4a3a5a;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .evento-card h2 a:hover {
+            color: #b8a9c9;
+        }
+
+        .evento-meta {
+            color: #888;
+            font-size: 0.9rem;
+            margin: 6px 0;
+        }
+
+        .evento-precio {
+            font-weight: 700;
+            color: #b8a9c9;
+            font-size: 1.1rem;
+        }
+
+        .evento-disponibles {
+            background: #f0ebf5;
+            padding: 4px 12px;
+            border-radius: 30px;
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #6b5b7b;
+        }
+
+        /* --- DETALLE DE EVENTO --- */
+        .detalle-container {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+            border: 1px solid #f0ebf5;
+        }
+
+        .detalle-container h1 {
+            font-size: 2rem;
+            color: #4a3a5a;
+            margin-bottom: 12px;
+        }
+
+        .detalle-container p {
+            margin: 10px 0;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #b8a9c9;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background: #a48bb5;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #b8a9c9;
+            border: 2px solid #b8a9c9;
+        }
+
+        .btn-outline:hover {
+            background: #b8a9c9;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #f5c2c2;
+            color: #7a4a4a;
+        }
+        .btn-danger:hover {
+            background: #e8a8a8;
+        }
+
+        /* --- MENSAJES FLASH --- */
+        .messages {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+        .messages li {
+            padding: 12px 20px;
+            border-radius: 16px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .messages .success {
+            background: #dde8d5;
+            color: #3a5a3a;
+        }
+        .messages .error {
+            background: #f5d5d5;
+            color: #7a3a3a;
+        }
+        .messages .info {
+            background: #d5e3f5;
+            color: #2a4a6a;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px 0;
+            color: #b8a9c9;
+            font-size: 0.85rem;
+            border-top: 1px solid #f0ebf5;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 600px) {
+            nav {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            .nav-links {
+                justify-content: center;
+            }
+            .eventos-grid {
+                grid-template-columns: 1fr;
+            }
+            .detalle-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- MENÚ -->
+        <nav>
+            <a href="{% url 'eventos:lista' %}" class="nav-brand">🎫 Ticketing</a>
+            <div class="nav-links">
+                <a href="{% url 'eventos:lista' %}" class="{% if request.resolver_match.url_name == 'lista' %}active{% endif %}">Inicio</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'eventos:mis_entradas' %}">Mis Entradas</a>
+                    <a href="{% url 'usuarios:logout' %}">Cerrar sesión</a>
+                    <a href="{% url 'eventos:dashboard' %}">Mi Dashboard</a>
+                    <span class="nav-user">👤 {{ user.username }}</span>
+                {% else %}
+                    <a href="{% url 'usuarios:login' %}">Iniciar sesión</a>
+                    <a href="{% url 'usuarios:registro' %}">Registrarse</a>
+                {% endif %}
+            </div>
+        </nav>
+
+        <!-- MENSAJES FLASH -->
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <!-- CONTENIDO PRINCIPAL -->
+        {% block contenido %}
+        {% endblock %}
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        &copy; 2026 Ticketing · Hecho con ❤️ y Django
+    </footer>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{% extends 'eventos/base.html' %}
+
+{% block titulo %}Próximos Eventos{% endblock %}
+
+{% block contenido %}
+    <h1 style="font-size:2rem; color:#4a3a5a; margin-bottom:20px;">🎉 Próximos Eventos</h1>
+    {% if eventos %}
+        <div class="eventos-grid">
+            {% for evento in eventos %}
+                <div class="evento-card">
+                    <h2><a href="{% url 'eventos:detalle' evento.id %}">{{ evento.nombre }}</a></h2>
+                    <div class="evento-meta">📅 {{ evento.fecha|date:"d/m/Y H:i" }}</div>
+                    <div class="evento-meta">📍 {{ evento.lugar }}</div>
+                    <div class="evento-precio">${{ evento.precio }}</div>
+                    <div class="evento-disponibles">🎟️ {{ evento.entradas_disponibles }} disponibles</div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="background:#f0ebf5; padding:20px; border-radius:16px;">No hay eventos disponibles por el momento.</p>
+    {% endif %}
+{% endblock %}
