@@ -119,6 +119,18 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 import os 
+from dotenv import load_dotenv
+
+load_dotenv()  # Lee las variables del archivo .env
+
+# Stripe
+STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
+
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+if not STRIPE_SECRET_KEY:
+    raise ValueError("STRIPE_SECRET_KEY no está configurada en el entorno.")
+
+STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

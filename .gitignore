@@ -16,6 +16,8 @@ __pycache__/
 
 # Archivos de configuración local
 *.local
+.env
+.env.*
 *.env
 
 # IDE

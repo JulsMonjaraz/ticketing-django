@@ -1,0 +1,11 @@
+{% extends 'eventos/base.html' %}
+
+{% block contenido %}
+<div class="detalle-container" style="text-align: center;">
+    <h1>¡Gracias por tu compra! 🎉</h1>
+    <p>Tu pago se ha procesado correctamente.</p>
+    <p>Tu entrada se está generando. En unos segundos aparecerá en "Mis Entradas".</p>
+    <br>
+    <a href="{% url 'eventos:mis_entradas' %}" class="btn">Ver mis entradas</a>
+</div>
+{% endblock %}
