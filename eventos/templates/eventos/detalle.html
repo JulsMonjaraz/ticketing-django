@@ -5,19 +5,27 @@
 {% block contenido %}
     <div class="detalle-container">
         <h1>{{ evento.nombre }}</h1>
-        <p><strong>📝 Descripción:</strong> {{ evento.descripcion }}</p>
-        <p><strong>📅 Fecha:</strong> {{ evento.fecha|date:"d/m/Y H:i" }}</p>
-        <p><strong>📍 Lugar:</strong> {{ evento.lugar }}</p>
-        <p><strong>💰 Precio:</strong> ${{ evento.precio }}</p>
-        <p><strong>🎟️ Disponibles:</strong> {{ evento.entradas_disponibles }} de {{ evento.capacidad }}</p>
+        <p>{{ evento.descripcion }}</p>
+        
+        <div style="margin:24px 0; padding:24px; background:#faf8ff; border-radius:14px; border:1px solid #e9e5f5;">
+            <p><strong>📅 Fecha:</strong> {{ evento.fecha|date:"d/m/Y H:i" }}</p>
+            <p><strong>📍 Lugar:</strong> {{ evento.lugar }}</p>
+            <p><strong>💰 Precio:</strong> ${{ evento.precio }}</p>
+            <p><strong>🎟️ Disponibles:</strong> {{ evento.entradas_disponibles }} de {{ evento.capacidad }}</p>
+        </div>
 
-        {% if evento.entradas_disponibles > 0 %}
-            <a href="{% url 'eventos:comprar' evento.id %}" class="btn">Comprar entrada</a>
+        {% if user.is_authenticated %}
+            {% if evento.entradas_disponibles > 0 %}
+                <a href="{% url 'eventos:comprar' evento.id %}" class="btn">Comprar entrada</a>
+            {% else %}
+                <p style="color:#dc2626; font-weight:600;">Entradas agotadas</p>
+            {% endif %}
         {% else %}
-            <p><strong style="color:#c44;">Entradas agotadas</strong></p>
+            <p style="color:#8b8a9e; margin-bottom:12px;">Inicia sesión para comprar entradas.</p>
+            <a href="{% url 'usuarios:login' %}" class="btn">Iniciar sesión</a>
         {% endif %}
 
         <br><br>
-        <a href="{% url 'eventos:lista' %}" class="btn btn-outline">← Volver a la lista</a>
+        <a href="{% url 'eventos:lista' %}" class="btn btn-outline">← Volver</a>
     </div>
 {% endblock %}

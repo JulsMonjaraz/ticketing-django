@@ -1,22 +1,29 @@
 {% extends 'eventos/base.html' %}
 
-{% block titulo %}Próximos Eventos{% endblock %}
+{% block titulo %}Eventos - Aurora Ticketing{% endblock %}
 
 {% block contenido %}
-    <h1 style="font-size:2rem; color:#4a3a5a; margin-bottom:20px;">🎉 Próximos Eventos</h1>
+    <div style="animation: slideUp 0.5s ease;">
+        <h1>Próximos Eventos</h1>
+        <p style="color:#8b8a9e; margin-bottom:24px;">Compra tus entradas para los mejores torneos y partidos</p>
+    </div>
+    
     {% if eventos %}
         <div class="eventos-grid">
             {% for evento in eventos %}
-                <div class="evento-card">
-                    <h2><a href="{% url 'eventos:detalle' evento.id %}">{{ evento.nombre }}</a></h2>
+                <div class="evento-card" onclick="window.location='{% url 'eventos:detalle' evento.id %}'">
+                    <h2>{{ evento.nombre }}</h2>
                     <div class="evento-meta">📅 {{ evento.fecha|date:"d/m/Y H:i" }}</div>
                     <div class="evento-meta">📍 {{ evento.lugar }}</div>
                     <div class="evento-precio">${{ evento.precio }}</div>
-                    <div class="evento-disponibles">🎟️ {{ evento.entradas_disponibles }} disponibles</div>
+                    <span class="evento-badge">{{ evento.entradas_disponibles }} disponibles</span>
                 </div>
             {% endfor %}
         </div>
     {% else %}
-        <p style="background:#f0ebf5; padding:20px; border-radius:16px;">No hay eventos disponibles por el momento.</p>
+        <div style="background:#ffffff; padding:60px 40px; border-radius:20px; text-align:center; border:1px solid #e9e5f5; animation: slideUp 0.5s ease;">
+            <div style="font-size:3rem; margin-bottom:16px;">📅</div>
+            <p style="color:#8b8a9e;">No hay eventos disponibles por el momento.</p>
+        </div>
     {% endif %}
 {% endblock %}

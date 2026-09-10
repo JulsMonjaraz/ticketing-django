@@ -3,13 +3,16 @@
 {% block titulo %}Registro{% endblock %}
 
 {% block contenido %}
-    <div class="detalle-container" style="max-width:500px; margin:0 auto;">
-        <h2>Crear cuenta</h2>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn">Registrarse</button>
-        </form>
-        <p style="margin-top:15px;">¿Ya tienes cuenta? <a href="{% url 'usuarios:login' %}">Inicia sesión</a></p>
-    </div>
+<div style="max-width:440px; margin:40px auto; background:#ffffff; border:1px solid #e9e5f5; border-radius:20px; padding:40px; box-shadow:0 8px 24px rgba(167,139,250,0.12); animation: slideUp 0.5s ease;">
+    <h1 style="text-align:center;">Crear cuenta</h1>
+    <p style="text-align:center; color:#8b8a9e; margin-bottom:24px;">Regístrate para comprar entradas</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn" style="width:100%;">Registrarse</button>
+    </form>
+    <p style="text-align:center; margin-top:16px; color:#8b8a9e; font-size:0.875rem;">
+        ¿Ya tienes cuenta? <a href="{% url 'usuarios:login' %}" style="color:#8b5cf6; font-weight:600;">Inicia sesión</a>
+    </p>
+</div>
 {% endblock %}

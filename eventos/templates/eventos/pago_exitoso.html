@@ -1,11 +1,11 @@
 {% extends 'eventos/base.html' %}
 
 {% block contenido %}
-<div class="detalle-container" style="text-align: center;">
-    <h1>¡Gracias por tu compra! 🎉</h1>
-    <p>Tu pago se ha procesado correctamente.</p>
-    <p>Tu entrada se está generando. En unos segundos aparecerá en "Mis Entradas".</p>
-    <br>
+<div style="max-width:540px; margin:60px auto; background:#ffffff; border:1px solid #e9e5f5; border-radius:20px; padding:48px; text-align:center; box-shadow:0 8px 24px rgba(167,139,250,0.12); animation: slideUp 0.5s ease;">
+    <div style="font-size:4rem; margin-bottom:16px; animation: pulse 1.5s ease infinite;">🎉</div>
+    <h1>¡Gracias por tu compra!</h1>
+    <p style="color:#8b8a9e; margin:16px 0;">Tu pago se ha procesado correctamente.</p>
+    <p style="color:#8b8a9e; margin-bottom:32px;">Tu entrada con el código QR se está generando. Aparecerá en "Mis Entradas" en unos segundos.</p>
     <a href="{% url 'eventos:mis_entradas' %}" class="btn">Ver mis entradas</a>
 </div>
 {% endblock %}
