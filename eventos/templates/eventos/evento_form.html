@@ -1,0 +1,29 @@
+{% extends 'eventos/base.html' %}
+
+{% block titulo %}{{ accion }} Evento - Halcones Voleibol{% endblock %}
+
+{% block contenido %}
+<div style="max-width:640px; margin:40px auto; background:#ffffff; border:1px solid #e9e5f5; border-radius:20px; padding:40px; box-shadow:0 8px 24px rgba(167,139,250,0.12); animation: slideUp 0.5s ease;">
+    <h1 style="margin-bottom:8px;">{{ accion }} Evento</h1>
+    <p style="color:#8b8a9e; margin-bottom:28px;">
+        {% if accion == 'Crear' %}
+            Completa la información para publicar un nuevo evento
+        {% else %}
+            Modifica la información del evento
+        {% endif %}
+    </p>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div style="display:flex; gap:12px; margin-top:24px;">
+            <button type="submit" class="btn" style="flex:1;">
+                {% if accion == 'Crear' %}Publicar evento{% else %}Guardar cambios{% endif %}
+            </button>
+            <a href="{% url 'eventos:dashboard' %}" class="btn btn-outline" style="flex:1; text-align:center;">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block titulo %}Aurora Ticketing{% endblock %}</title>
+    <title>{% block titulo %}Halcones Voleibol{% endblock %}</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -552,9 +552,9 @@
 
     <div class="container">
         <nav>
-            <a href="{% url 'eventos:lista' %}" class="nav-brand">
-                <span>🏆</span> Aurora Ticketing
-            </a>
+        <a href="{% url 'eventos:lista' %}" class="nav-brand">  
+            <span>🦅</span> Halcones Voleibol
+        </a>
             <div class="nav-links">
                 <a href="{% url 'eventos:lista' %}" class="{% if request.resolver_match.url_name == 'lista' %}active{% endif %}">Eventos</a>
                 {% if user.is_authenticated %}
@@ -579,9 +579,9 @@
         {% endblock %}
     </div>
 
-    <footer>
-        &copy; 2026 Aurora Ticketing · Diseñado y desarrollado por <a href="https://github.com/JulsMonjaraz">Julio Monjaraz</a>
-    </footer>
+<footer>
+    &copy; 2026 Halcones Voleibol · Diseñado y desarrollado por <a href="https://github.com/JulsMonjaraz">Julio Monjaraz</a>
+</footer>
 
     <script>
         // === TOAST NOTIFICATIONS ===

@@ -14,6 +14,7 @@ from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.conf import settings
+from .forms import EventoForm
 
 
 # secret key
@@ -153,3 +154,43 @@ def stripe_webhook(request):
 
     return HttpResponse(status=200)
 
+@login_required
+def crear_evento(request):
+    if request.method == 'POST':
+        form = EventoForm(request.POST, request.FILES)
+        if form.is_valid():
+            evento = form.save(commit=False)
+            evento.organizador = request.user
+            evento.save()
+            messages.success(request, '¡Evento creado exitosamente!')
+            return redirect('eventos:dashboard')
+    else:
+        form = EventoForm()
+    return render(request, 'eventos/evento_form.html', {'form': form, 'accion': 'Crear'})
+
+
+@login_required
+def editar_evento(request, pk):
+    evento = get_object_or_404(Evento, pk=pk, organizador=request.user)
+    if request.method == 'POST':
+        form = EventoForm(request.POST, request.FILES, instance=evento)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Evento actualizado correctamente.')
+            return redirect('eventos:dashboard')
+    else:
+        form = EventoForm(instance=evento)
+    return render(request, 'eventos/evento_form.html', {
+        'form': form,
+        'accion': 'Editar',
+        'evento': evento,
+    })
+
+
+@login_required
+def desactivar_evento(request, pk):
+    evento = get_object_or_404(Evento, pk=pk, organizador=request.user)
+    evento.activo = False
+    evento.save()
+    messages.info(request, f'Evento "{evento.nombre}" desactivado.')
+    return redirect('eventos:dashboard')

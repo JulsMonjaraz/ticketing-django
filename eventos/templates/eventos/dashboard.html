@@ -1,6 +1,6 @@
 {% extends 'eventos/base.html' %}
 
-{% block titulo %}Mi Dashboard{% endblock %}
+{% block titulo %}Mi Dashboard{% endblock titulo %}
 
 {% block contenido %}
 <h1>Mi Dashboard</h1>
@@ -21,7 +21,11 @@
     </div>
 </div>
 
-<h2>Tus eventos</h2>
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+    <h2 style="margin:0;">Tus eventos</h2>
+    <a href="{% url 'eventos:crear_evento' %}" class="btn">+ Crear evento</a>
+</div>
+
 {% if eventos %}
     <div style="background:#ffffff; border:1px solid #e9e5f5; border-radius:20px; overflow:hidden; box-shadow:0 2px 12px rgba(167,139,250,0.06); animation: slideUp 0.5s ease;">
         <table style="width:100%; border-collapse:collapse;">
@@ -31,6 +35,7 @@
                     <th style="padding:16px; font-size:0.8rem; color:#8b8a9e; font-weight:600;">Fecha</th>
                     <th style="padding:16px; font-size:0.8rem; color:#8b8a9e; font-weight:600;">Vendidas</th>
                     <th style="padding:16px; font-size:0.8rem; color:#8b8a9e; font-weight:600;">Recaudado</th>
+                    <th style="padding:16px; font-size:0.8rem; color:#8b8a9e; font-weight:600;">Estado</th>
                     <th style="padding:16px; font-size:0.8rem; color:#8b8a9e; font-weight:600;">Acciones</th>
                 </tr>
             </thead>
@@ -46,7 +51,19 @@
                         <td style="padding:16px; color:#8b8a9e; font-size:0.875rem;">{{ item.entradas_vendidas }}</td>
                         <td style="padding:16px; color:#8b8a9e; font-size:0.875rem;">${{ item.recaudado }}</td>
                         <td style="padding:16px;">
-                            <a href="{% url 'admin:eventos_evento_change' item.evento.id %}" class="btn btn-outline" style="padding:6px 14px; font-size:0.8rem;">Editar</a>
+                            {% if item.evento.activo %}
+                                <span style="background:#d1fae5; color:#065f46; padding:4px 10px; border-radius:8px; font-size:0.75rem; font-weight:600;">Activo</span>
+                            {% else %}
+                                <span style="background:#fee2e2; color:#991b1b; padding:4px 10px; border-radius:8px; font-size:0.75rem; font-weight:600;">Inactivo</span>
+                            {% endif %}
+                        </td>
+                        <td style="padding:16px;">
+                            <div style="display:flex; gap:8px;">
+                                <a href="{% url 'eventos:editar_evento' item.evento.id %}" class="btn btn-outline" style="padding:6px 14px; font-size:0.8rem;">Editar</a>
+                                {% if item.evento.activo %}
+                                    <a href="{% url 'eventos:desactivar_evento' item.evento.id %}" class="btn btn-outline" style="padding:6px 14px; font-size:0.8rem; color:#dc2626; border-color:#fca5a5;" onclick="return confirm('¿Desactivar este evento?');">Desactivar</a>
+                                {% endif %}
+                            </div>
                         </td>
                     </tr>
                 {% endfor %}
@@ -56,9 +73,8 @@
 {% else %}
     <div style="background:#ffffff; padding:60px 40px; border-radius:20px; text-align:center; border:1px solid #e9e5f5; animation: slideUp 0.5s ease;">
         <div style="font-size:3rem; margin-bottom:16px;">📊</div>
-        <p style="color:#8b8a9e;">No has creado ningún evento aún.</p>
-        <br>
-        <a href="{% url 'admin:eventos_evento_add' %}" class="btn">Crear evento</a>
+        <p style="color:#8b8a9e; margin-bottom:20px;">No has creado ningún evento aún.</p>
+        <a href="{% url 'eventos:crear_evento' %}" class="btn">Crear mi primer evento</a>
     </div>
 {% endif %}
-{% endblock %}
+{% endblock contenido %}
