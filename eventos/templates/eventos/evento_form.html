@@ -18,30 +18,45 @@
         {{ form.as_p }}
 
         <!-- MAPA INTERACTIVO -->
-        <div style="margin:24px 0;">
-            <label style="display:block; font-weight:600; font-size:0.875rem; color:#4a4863; margin-bottom:8px;">
-                📍 Selecciona la ubicación en el mapa
-            </label>
-            <input 
-                id="buscador-direccion" 
-                type="text" 
-                placeholder="Busca una dirección o lugar..." 
-                style="width:100%; padding:11px 14px; border:1.5px solid #e9e5f5; border-radius:10px; font-size:0.9rem; margin-bottom:12px;"
-            >
-            <div id="map" style="width:100%; height:400px; border-radius:14px; border:1px solid #e9e5f5; overflow:hidden;"></div>
-            <p style="color:#8b8a9e; font-size:0.8rem; margin-top:8px;">
-                💡 Escribe la dirección arriba o haz clic en el mapa para colocar el pin.
-            </p>
-        </div>
+<div style="margin:24px 0;">
+    <label style="display:block; font-weight:600; font-size:0.875rem; color:#4a4863; margin-bottom:8px;">
+        📍 Ubicación del evento
+    </label>
 
-        <div style="display:flex; gap:12px; margin-top:24px;">
-            <button type="submit" class="btn" style="flex:1;">
-                {% if accion == 'Crear' %}Publicar evento{% else %}Guardar cambios{% endif %}
-            </button>
-            <a href="{% url 'eventos:dashboard' %}" class="btn btn-outline" style="flex:1; text-align:center;">
-                Cancelar
-            </a>
-        </div>
+    <div style="position:relative; border-radius:14px; overflow:hidden; border:1px solid #e9e5f5;">
+        <!-- Buscador flotante sobre el mapa -->
+        <input 
+            id="buscador-direccion" 
+            type="text" 
+            placeholder="🔍 Busca una dirección o lugar..."
+            style="
+                position:absolute;
+                top:12px;
+                left:12px;
+                right:12px;
+                z-index:10;
+                padding:12px 16px;
+                border:1px solid #e9e5f5;
+                border-radius:10px;
+                background:#ffffff;
+                font-size:0.9rem;
+                font-family:inherit;
+                box-shadow:0 4px 12px rgba(0,0,0,0.08);
+            "
+        >
+        <!-- Mapa -->
+        <div id="map" style="width:100%; height:420px;"></div>
+    </div>
+
+    <p style="color:#8b8a9e; font-size:0.8rem; margin-top:8px;">
+        💡 Escribe la dirección en el buscador o haz clic en el mapa para colocar el pin.
+    </p>
+
+    <!-- Dirección seleccionada (visible, solo lectura) -->
+    <div id="direccion-seleccionada" style="display:none; background:#faf8ff; border:1px solid #e9e5f5; border-radius:10px; padding:12px 16px; margin-top:12px; font-size:0.85rem; color:#4a4863;">
+        <strong>📍 Dirección:</strong> <span id="direccion-texto"></span>
+    </div>
+</div>
     </form>
 </div>
 
@@ -51,12 +66,10 @@
     let map, marker, autocomplete;
 
     function initMap() {
-        // Coordenadas iniciales: Querétaro por defecto (o las del evento si es edición)
         const latInicial = parseFloat(document.getElementById('id_latitud').value) || 20.5888;
         const lngInicial = parseFloat(document.getElementById('id_longitud').value) || -100.3899;
         const ubicacionInicial = { lat: latInicial, lng: lngInicial };
 
-        // Crear mapa
         map = new google.maps.Map(document.getElementById("map"), {
             zoom: 13,
             center: ubicacionInicial,
@@ -67,9 +80,10 @@
                 { featureType: "water", elementType: "geometry", stylers: [{ color: "#d1e8f5" }] },
                 { featureType: "poi", elementType: "geometry", stylers: [{ color: "#ede9fe" }] },
             ],
+            disableDefaultUI: true,
+            zoomControl: true,
         });
 
-        // Crear marcador
         marker = new google.maps.Marker({
             position: ubicacionInicial,
             map: map,
@@ -77,13 +91,20 @@
             animation: google.maps.Animation.DROP,
         });
 
-        // Clic en el mapa → mueve el pin
+        // Si es edición, mostrar dirección actual
+        if (document.getElementById('id_lugar').value) {
+            document.getElementById('direccion-texto').textContent = document.getElementById('id_lugar').value;
+            document.getElementById('direccion-seleccionada').style.display = 'block';
+            map.setZoom(16);
+        }
+
+        // Click en el mapa
         map.addListener("click", (e) => {
             marker.setPosition(e.latLng);
             actualizarCampos(e.latLng.lat(), e.latLng.lng());
         });
 
-        // Arrastrar el pin → actualiza los campos
+        // Arrastrar el pin
         marker.addListener("dragend", (e) => {
             actualizarCampos(e.latLng.lat(), e.latLng.lng());
         });
@@ -105,25 +126,29 @@
             map.setZoom(16);
             marker.setPosition({ lat, lng });
 
-            actualizarCampos(lat, lng);
             document.getElementById("id_lugar").value = place.formatted_address || input.value;
-        });
+            document.getElementById("id_latitud").value = lat.toFixed(6);
+            document.getElementById("id_longitud").value = lng.toFixed(6);
 
-        // Si es edición, coloca el pin donde ya está
-        if (document.getElementById('id_latitud').value) {
-            map.setZoom(16);
-        }
+            document.getElementById("direccion-texto").textContent = place.formatted_address;
+            document.getElementById("direccion-seleccionada").style.display = 'block';
+
+            // Ocultar teclado en móvil
+            input.blur();
+        });
     }
 
     function actualizarCampos(lat, lng) {
         document.getElementById("id_latitud").value = lat.toFixed(6);
         document.getElementById("id_longitud").value = lng.toFixed(6);
 
-        // Reverse geocoding: obtener la dirección desde las coordenadas
         const geocoder = new google.maps.Geocoder();
         geocoder.geocode({ location: { lat, lng } }, (results, status) => {
             if (status === "OK" && results[0]) {
-                document.getElementById("id_lugar").value = results[0].formatted_address;
+                const direccion = results[0].formatted_address;
+                document.getElementById("id_lugar").value = direccion;
+                document.getElementById("direccion-texto").textContent = direccion;
+                document.getElementById("direccion-seleccionada").style.display = 'block';
             }
         });
     }

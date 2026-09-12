@@ -200,7 +200,13 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-SITE_ID = 3
+# SITE_ID condicional: diferente en local y producción
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+
+if RENDER_EXTERNAL_HOSTNAME:
+    SITE_ID = 3   # <-- El ID del sitio en PRODUCCIÓN
+else:
+    SITE_ID = 1   # <-- El ID del sitio en LOCAL
 ACCOUNT_EMAIL_VERIFICATION = 'none'  # Para desarrollo (no pide verificar email)
 ACCOUNT_LOGIN_METHODS = {'email'}    # Login con email en lugar de username
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']  # Campos del registro

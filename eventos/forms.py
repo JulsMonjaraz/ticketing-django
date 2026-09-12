@@ -9,7 +9,7 @@ class EventoForm(forms.ModelForm):
             'nombre': forms.TextInput(attrs={'placeholder': 'Ej. Torneo de Voleibol'}),
             'descripcion': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Describe tu evento...'}),
             'fecha': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-            'lugar': forms.TextInput(attrs={'placeholder': 'Escribe o busca una dirección', 'id': 'id_lugar'}),
+            'lugar': forms.HiddenInput(attrs={'id': 'id_lugar'}),
             'latitud': forms.HiddenInput(attrs={'id': 'id_latitud'}),
             'longitud': forms.HiddenInput(attrs={'id': 'id_longitud'}),
             'capacidad': forms.NumberInput(attrs={'placeholder': '100'}),
