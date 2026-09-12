@@ -558,13 +558,13 @@
             <div class="nav-links">
                 <a href="{% url 'eventos:lista' %}" class="{% if request.resolver_match.url_name == 'lista' %}active{% endif %}">Eventos</a>
                 {% if user.is_authenticated %}
-                    <a href="{% url 'eventos:mis_entradas' %}">Mis Entradas</a>
-                    <a href="{% url 'eventos:dashboard' %}">Dashboard</a>
-                    <span class="nav-user">👤 {{ user.username }}</span>
-                    <a href="{% url 'usuarios:logout' %}">Salir</a>
-                {% else %}
-                    <a href="{% url 'usuarios:login' %}">Iniciar sesión</a>
-                    <a href="{% url 'usuarios:registro' %}">Registrarse</a>
+                <a href="{% url 'eventos:mis_entradas' %}">Mis Entradas</a>
+                <a href="{% url 'eventos:dashboard' %}">Dashboard</a>
+                <span class="nav-user">👤 {{ user.username }}</span>
+                <a href="{% url 'account_logout' %}">Salir</a>
+                    {% else %}
+                <a href="{% url 'account_login' %}">Iniciar sesión</a>
+                <a href="{% url 'account_signup' %}">Registrarse</a>
                 {% endif %}
             </div>
         </nav>

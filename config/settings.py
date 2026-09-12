@@ -39,6 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',              # <-- NUEVO
+    'allauth',                           # <-- NUEVO
+    'allauth.account',                   # <-- NUEVO
+    'allauth.socialaccount',             # <-- NUEVO
+    'allauth.socialaccount.providers.google',  # <-- NUEVO
     'usuarios',
     'eventos',
 ]
@@ -51,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -58,7 +64,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -180,3 +186,26 @@ else:
     # Desarrollo local (SQLite)
     DEBUG = True
     ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SITE_ID = 1
+ACCOUNT_EMAIL_VERIFICATION = 'none'  # Para desarrollo (no pide verificar email)
+ACCOUNT_LOGIN_METHODS = {'email'}    # Login con email en lugar de username
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']  # Campos del registro
+
+# Redirecciones después de login/logout
+LOGIN_REDIRECT_URL = 'eventos:lista'
+ACCOUNT_LOGOUT_REDIRECT_URL = 'eventos:lista'
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {'access_type': 'online'},
+    }
+}
+
+# Saltar la página de confirmación de allauth
+SOCIALACCOUNT_LOGIN_ON_GET = True

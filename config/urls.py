@@ -5,10 +5,11 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('usuarios/', include('usuarios.urls')),
+    path('accounts/', include('allauth.urls')),
     path('', include('eventos.urls')),
 ]
 
 # servir archivos multimedia solo en desarrollo 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
