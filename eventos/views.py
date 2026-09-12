@@ -15,6 +15,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.conf import settings
 from .forms import EventoForm
+from django.conf import settings
+from .services import geocodificar_direccion
 
 
 # secret key
@@ -25,8 +27,19 @@ def lista_eventos(request):
     return render(request, 'eventos/lista.html', {'eventos': eventos})
 
 def detalle_evento(request, pk):
-    evento = get_object_or_404(Evento, pk=pk, activo=True )
-    return render(request, 'eventos/detalle.html', {'evento':evento})
+    evento = get_object_or_404(Evento, pk=pk, activo=True)
+    # Usar coordenadas guardadas en el modelo
+    coordenadas = None
+    if evento.latitud and evento.longitud:
+        coordenadas = {'lat': float(evento.latitud), 'lng': float(evento.longitud)}
+    
+    
+    context = {
+        'evento': evento,
+        'coordenadas': coordenadas,
+        'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,
+    }
+    return render(request, 'eventos/detalle.html', context)
 
 
 @login_required
@@ -166,7 +179,7 @@ def crear_evento(request):
             return redirect('eventos:dashboard')
     else:
         form = EventoForm()
-    return render(request, 'eventos/evento_form.html', {'form': form, 'accion': 'Crear'})
+    return render(request, 'eventos/evento_form.html', {'form': form, 'accion': 'Crear','google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,})
 
 
 @login_required
@@ -184,6 +197,7 @@ def editar_evento(request, pk):
         'form': form,
         'accion': 'Editar',
         'evento': evento,
+        'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,
     })
 
 

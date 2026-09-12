@@ -209,3 +209,6 @@ SOCIALACCOUNT_PROVIDERS = {
 
 # Saltar la página de confirmación de allauth
 SOCIALACCOUNT_LOGIN_ON_GET = True
+
+# Google Maps
+GOOGLE_MAPS_API_KEY = os.environ.get('GOOGLE_MAPS_API_KEY', '')

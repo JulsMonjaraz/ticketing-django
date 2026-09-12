@@ -9,6 +9,8 @@ class Evento(models.Model):
     descripcion = models.TextField()
     fecha = models.DateTimeField()
     lugar = models.CharField(max_length=200)
+    latitud = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)   # <-- NUEVO
+    longitud = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)  # <-- NUEVO
     capacidad = models.PositiveBigIntegerField()
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     imagen = models.ImageField(upload_to='eventos/',null=True, blank = True)
