@@ -153,35 +153,43 @@ MAILERS = {
 
 
 # --- PRODUCCIÓN ---
-# Detectar si estamos en Render
-
 import dj_database_url
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 
 if RENDER_EXTERNAL_HOSTNAME:
     # Estamos en producción (Render)
-    DEBUG = False
+    DEBUG = os.environ.get('DEBUG', 'False') == 'True'   # <-- Lee la variable de entorno
     ALLOWED_HOSTS = [RENDER_EXTERNAL_HOSTNAME, 'localhost', '127.0.0.1']
     
     # Base de datos PostgreSQL (Render la proporciona vía DATABASE_URL)
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=os.environ.get('DATABASE_URL'),
-            conn_max_age=600,
-            ssl_require=True
-        )
-    }
+    DATABASE_URL = os.environ.get('DATABASE_URL')
+    if DATABASE_URL and DATABASE_URL.startswith(('postgres://', 'postgresql://')):
+        DATABASES = {
+            'default': dj_database_url.config(
+                default=DATABASE_URL,
+                conn_max_age=600,
+                ssl_require=True
+            )
+        }
+    else:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
     
     # WhiteNoise para archivos estáticos
     MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     
-    # Seguridad (producción)
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+    # Seguridad (producción) - solo si DEBUG es False
+    if not DEBUG:
+        SECURE_SSL_REDIRECT = True
+        SESSION_COOKIE_SECURE = True
+        CSRF_COOKIE_SECURE = True
 else:
     # Desarrollo local (SQLite)
     DEBUG = True
