@@ -200,7 +200,7 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-SITE_ID = 1
+SITE_ID = 3
 ACCOUNT_EMAIL_VERIFICATION = 'none'  # Para desarrollo (no pide verificar email)
 ACCOUNT_LOGIN_METHODS = {'email'}    # Login con email en lugar de username
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']  # Campos del registro
