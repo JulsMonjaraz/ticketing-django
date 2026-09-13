@@ -6,19 +6,38 @@
     <h1>Mis Entradas</h1>
     <p style="color:#8b8a9e; margin-bottom:24px;">Todas tus entradas compradas</p>
 
-    {% if entrada.qr_code_base64 %}
-    <div>
-        <img src="data:image/png;base64,{{ entrada.qr_code_base64 }}" 
-        alt="QR de la entrada" 
-        style="width:130px; height:130px; border-radius:14px; border:2px solid #ede9fe; padding:6px; background:#ffffff;">
-    </div>
-{% elif entrada.qr_code %}
-    <div>
-        <img src="{{ entrada.qr_code.url }}" 
-        alt="QR de la entrada" 
-        style="width:130px; height:130px; border-radius:14px; border:2px solid #ede9fe; padding:6px; background:#ffffff;">
-    </div>
-{% else %}
-    <p style="color:#8b8a9e; font-size:0.8rem;">QR no disponible</p>
-{% endif %}
+    {% if entradas %}
+        {% for entrada in entradas %}
+            <div class="evento-card" style="display:flex; gap:24px; align-items:center; flex-wrap:wrap; cursor:default;">
+                <div style="flex:1; min-width:200px;">
+                    <h2 style="margin-bottom:10px;">{{ entrada.evento.nombre }}</h2>
+                    <p style="color:#8b8a9e; font-size:0.875rem; margin:4px 0;"><strong>Código:</strong> {{ entrada.codigo_unico }}</p>
+                    <p style="color:#8b8a9e; font-size:0.875rem; margin:4px 0;"><strong>Fecha:</strong> {{ entrada.fecha_compra|date:"d/m/Y" }}</p>
+                    <p style="color:#8b8a9e; font-size:0.875rem; margin:4px 0;"><strong>Precio:</strong> ${{ entrada.precio_pagado }}</p>
+                </div>
+                {% if entrada.qr_code_base64 %}
+                    <div>
+                        <img src="data:image/png;base64,{{ entrada.qr_code_base64 }}" 
+                            alt="QR de la entrada" 
+                            style="width:130px; height:130px; border-radius:14px; border:2px solid #ede9fe; padding:6px; background:#ffffff;">
+                    </div>
+                {% elif entrada.qr_code %}
+                    <div>
+                        <img src="{{ entrada.qr_code.url }}" 
+                            alt="QR de la entrada" 
+                            style="width:130px; height:130px; border-radius:14px; border:2px solid #ede9fe; padding:6px; background:#ffffff;">
+                    </div>
+                {% else %}
+                    <p style="color:#8b8a9e; font-size:0.8rem;">QR no disponible</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="evento-card" style="text-align:center; cursor:default; padding:60px 40px;">
+            <div style="font-size:3rem; margin-bottom:16px;">🎟️</div>
+            <p style="color:#8b8a9e;">No has comprado ninguna entrada aún.</p>
+            <br>
+            <a href="{% url 'eventos:lista' %}" class="btn">Ver eventos</a>
+        </div>
+    {% endif %}
 {% endblock %}
