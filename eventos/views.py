@@ -126,7 +126,7 @@ def pago_exitoso(request, pk):
     evento = get_object_or_404(Evento, pk=pk)
     return render(request, 'eventos/pago_exitoso.html', {'evento': evento})
 
-@csrf_exempt
+
 @csrf_exempt
 def stripe_webhook(request):
     payload = request.body

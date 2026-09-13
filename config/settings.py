@@ -52,6 +52,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'config.middleware.ExemptWebhookFromCSRFMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -159,8 +160,16 @@ RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 
 if RENDER_EXTERNAL_HOSTNAME:
     # Estamos en producción (Render)
-    DEBUG = os.environ.get('DEBUG', 'False') == 'True'   # <-- Lee la variable de entorno
+    # === PRODUCCIÓN ===
+    DEBUG = os.environ.get('DEBUG', 'False') == 'True'
     ALLOWED_HOSTS = [RENDER_EXTERNAL_HOSTNAME, 'localhost', '127.0.0.1']
+    SITE_ID = 3
+    
+    # CSRF: permitir el dominio de Render
+    CSRF_TRUSTED_ORIGINS = [
+        f'https://{RENDER_EXTERNAL_HOSTNAME}',
+        'https://*.onrender.com',
+    ]
     
     # Base de datos PostgreSQL (Render la proporciona vía DATABASE_URL)
     DATABASE_URL = os.environ.get('DATABASE_URL')
