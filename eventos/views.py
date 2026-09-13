@@ -17,6 +17,7 @@ from django.conf import settings
 from .forms import EventoForm
 from django.conf import settings
 from .services import geocodificar_direccion
+import base64
 
 
 # secret key
@@ -140,9 +141,9 @@ def stripe_webhook(request):
 
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
-        metadata = session.metadata.to_dict()       # <-- Convierte a dict
-        user_id = metadata.get('user_id')           # <-- Ahora sí funciona .get()
-        evento_id = metadata.get('evento_id')       # <-- Ahora sí funciona .get()
+        metadata = session.metadata.to_dict()
+        user_id = metadata.get('user_id')
+        evento_id = metadata.get('evento_id')
 
         if user_id and evento_id:
             try:
@@ -157,11 +158,15 @@ def stripe_webhook(request):
                         codigo_unico=codigo,
                         precio_pagado=evento.precio,
                     )
+
+                    # Generar el QR y guardarlo como base64 en la BD
                     qr = qrcode.make(f"TICKET:{codigo}")
                     buffer = BytesIO()
                     qr.save(buffer)
                     buffer.seek(0)
-                    entrada.qr_code.save(f"{codigo}.png", File(buffer), save=True)
+                    qr_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+                    entrada.qr_code_base64 = qr_base64
+                    entrada.save()
             except (User.DoesNotExist, Evento.DoesNotExist):
                 pass
 

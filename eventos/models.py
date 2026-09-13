@@ -40,6 +40,7 @@ class Entrada(models.Model):
     comprador = models.ForeignKey(User, on_delete=models.CASCADE)
     codigo_unico = models.CharField( max_length=100,unique=True, editable=False)
     qr_code = models.ImageField(upload_to='qrs/', null=True, blank=True)
+    qr_code_base64 = models.TextField(null=True, blank=True)
     precio_pagado = models.DecimalField(max_digits=10, decimal_places=2)
     fecha_compra = models.DateField(auto_now_add=True)
     usada = models.BooleanField(default=False)
