@@ -1,6 +1,6 @@
 {% extends 'eventos/base.html' %}
 
-{% block titulo %}{{ accion }} Evento{% endblock %}
+{% block titulo %}{{ accion }} Evento - Halcones Voleibol{% endblock %}
 
 {% block contenido %}
 <div style="max-width:800px; margin:40px auto; background:#ffffff; border:1px solid #e9e5f5; border-radius:20px; padding:40px; box-shadow:0 8px 24px rgba(167,139,250,0.12);">
@@ -18,49 +18,59 @@
         {{ form.as_p }}
 
         <!-- MAPA INTERACTIVO -->
-<div style="margin:24px 0;">
-    <label style="display:block; font-weight:600; font-size:0.875rem; color:#4a4863; margin-bottom:8px;">
-        📍 Ubicación del evento
-    </label>
+        <div style="margin:24px 0;">
+            <label style="display:block; font-weight:600; font-size:0.875rem; color:#4a4863; margin-bottom:8px;">
+                📍 Ubicación del evento
+            </label>
 
-    <div style="position:relative; border-radius:14px; overflow:hidden; border:1px solid #e9e5f5;">
-        <!-- Buscador flotante sobre el mapa -->
-        <input 
-            id="buscador-direccion" 
-            type="text" 
-            placeholder="🔍 Busca una dirección o lugar..."
-            style="
-                position:absolute;
-                top:12px;
-                left:12px;
-                right:12px;
-                z-index:10;
-                padding:12px 16px;
-                border:1px solid #e9e5f5;
-                border-radius:10px;
-                background:#ffffff;
-                font-size:0.9rem;
-                font-family:inherit;
-                box-shadow:0 4px 12px rgba(0,0,0,0.08);
-            "
-        >
-        <!-- Mapa -->
-        <div id="map" style="width:100%; height:420px;"></div>
-    </div>
+            <div style="position:relative; border-radius:14px; overflow:hidden; border:1px solid #e9e5f5;">
+                <!-- Buscador flotante sobre el mapa -->
+                <input 
+                    id="buscador-direccion" 
+                    type="text" 
+                    placeholder="🔍 Busca una dirección o lugar..."
+                    style="
+                        position:absolute;
+                        top:12px;
+                        left:12px;
+                        right:12px;
+                        z-index:10;
+                        padding:12px 16px;
+                        border:1px solid #e9e5f5;
+                        border-radius:10px;
+                        background:#ffffff;
+                        font-size:0.9rem;
+                        font-family:inherit;
+                        box-shadow:0 4px 12px rgba(0,0,0,0.08);
+                    "
+                >
+                <!-- Mapa -->
+                <div id="map" style="width:100%; height:420px;"></div>
+            </div>
 
-    <p style="color:#8b8a9e; font-size:0.8rem; margin-top:8px;">
-        💡 Escribe la dirección en el buscador o haz clic en el mapa para colocar el pin.
-    </p>
+            <p style="color:#8b8a9e; font-size:0.8rem; margin-top:8px;">
+                💡 Escribe la dirección en el buscador o haz clic en el mapa para colocar el pin.
+            </p>
 
-    <!-- Dirección seleccionada (visible, solo lectura) -->
-    <div id="direccion-seleccionada" style="display:none; background:#faf8ff; border:1px solid #e9e5f5; border-radius:10px; padding:12px 16px; margin-top:12px; font-size:0.85rem; color:#4a4863;">
-        <strong>📍 Dirección:</strong> <span id="direccion-texto"></span>
-    </div>
-</div>
+            <!-- Dirección seleccionada -->
+            <div id="direccion-seleccionada" style="display:none; background:#faf8ff; border:1px solid #e9e5f5; border-radius:10px; padding:12px 16px; margin-top:12px; font-size:0.85rem; color:#4a4863;">
+                <strong>📍 Dirección:</strong> <span id="direccion-texto"></span>
+            </div>
+        </div>
+
+        <!-- BOTONES -->
+        <div style="display:flex; gap:12px; margin-top:32px;">
+            <button type="submit" class="btn" style="flex:1;">
+                {% if accion == 'Crear' %}Publicar evento{% else %}Guardar cambios{% endif %}
+            </button>
+            <a href="{% url 'eventos:dashboard' %}" class="btn btn-outline" style="flex:1; text-align:center; display:flex; align-items:center; justify-content:center;">
+                Cancelar
+            </a>
+        </div>
     </form>
 </div>
 
-<!-- Google Maps API con Places para el buscador -->
+<!-- Google Maps API con Places -->
 <script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&libraries=places"></script>
 <script>
     let map, marker, autocomplete;
@@ -91,25 +101,21 @@
             animation: google.maps.Animation.DROP,
         });
 
-        // Si es edición, mostrar dirección actual
         if (document.getElementById('id_lugar').value) {
             document.getElementById('direccion-texto').textContent = document.getElementById('id_lugar').value;
             document.getElementById('direccion-seleccionada').style.display = 'block';
             map.setZoom(16);
         }
 
-        // Click en el mapa
         map.addListener("click", (e) => {
             marker.setPosition(e.latLng);
             actualizarCampos(e.latLng.lat(), e.latLng.lng());
         });
 
-        // Arrastrar el pin
         marker.addListener("dragend", (e) => {
             actualizarCampos(e.latLng.lat(), e.latLng.lng());
         });
 
-        // Buscador con autocompletado
         const input = document.getElementById("buscador-direccion");
         autocomplete = new google.maps.places.Autocomplete(input, {
             fields: ["formatted_address", "geometry"],
@@ -133,7 +139,6 @@
             document.getElementById("direccion-texto").textContent = place.formatted_address;
             document.getElementById("direccion-seleccionada").style.display = 'block';
 
-            // Ocultar teclado en móvil
             input.blur();
         });
     }
